@@ -1,0 +1,86 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+using OpenQA.Selenium.PhantomJS;
+using OpenQA.Selenium;
+using System.Threading;
+using System.IO;
+
+
+namespace OnlineRandomize
+{
+    /// <summary>
+    /// Логика взаимодействия для MainWindow.xaml
+    /// </summary>
+    public partial class MainWindow : Window
+    {
+        IWebDriver web;
+        int Ot;
+        int Do;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void Generate_Click(object sender, RoutedEventArgs e)
+        {
+
+            try
+            {
+
+                IWebElement boxOT = web.FindElement(By.Id("nachc"));
+                IWebElement boxDO = web.FindElement(By.Id("konch"));
+                IWebElement Generate = web.FindElement(By.ClassName("knop_calk"));
+
+                Ot = Convert.ToInt32(Min.Text);
+                Do = Convert.ToInt32(Max.Text);
+
+                boxOT.Clear();
+                boxDO.Clear();
+
+
+                boxOT.SendKeys(Ot.ToString());
+                boxDO.SendKeys(Do.ToString());
+
+                Generate.Click();
+
+                IWebElement result = web.FindElement(By.Id("vstv_slch_chsl"));
+                randomNum.Content = result.Text.ToString();
+            }
+
+            catch
+            {
+                MessageBox.Show("Неправильное число");
+            }
+
+           
+            
+        }
+
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            web = new PhantomJSDriver();
+            web.Navigate().GoToUrl("http://www.calculator888.ru/generator-sluchajnyh-chisel");
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            web.Quit();
+        }
+     
+    }
+
+}
+
